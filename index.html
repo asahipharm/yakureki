@@ -52,55 +52,41 @@
     }
 
     .left-top {
-      padding: 16px;
+      padding: 12px 14px;
       background: #F8FAFC;
       border-bottom: 1px solid #e2e8f0;
       flex-shrink: 0;
     }
 
     /* アップロードエリア */
-    .upload-area {
-      border: 2.5px dashed #93C5FD;
-      border-radius: 14px;
-      padding: 20px 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: #EFF6FF;
-    }
-    .upload-area:hover, .upload-area.dragover {
-      background: #DBEAFE;
-      border-color: #3B82F6;
-    }
-    .upload-area p {
-      color: #64748B;
-      font-size: 13px;
-      margin-top: 8px;
+    .upload-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .btn-upload {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: #1D4ED8;
       color: white;
       border: none;
       border-radius: 8px;
-      padding: 11px 22px;
-      font-size: 15px;
+      padding: 9px 16px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
+      white-space: nowrap;
     }
     .btn-upload:hover { background: #1E40AF; }
 
     .sample-link {
-      display: block;
-      text-align: center;
-      margin-top: 10px;
       font-size: 13px;
       color: #3B82F6;
       cursor: pointer;
       text-decoration: none;
+      white-space: nowrap;
     }
     .sample-link:hover { text-decoration: underline; }
 
@@ -109,15 +95,71 @@
       display: none;
       align-items: flex-start;
       gap: 8px;
-      margin-top: 12px;
-      padding: 12px 14px;
+      margin-top: 10px;
+      padding: 10px 12px;
       background: #FEF2F2;
       border: 1px solid #FECACA;
       border-radius: 10px;
       color: #DC2626;
-      font-size: 14px;
+      font-size: 13px;
     }
     .error-box.show { display: flex; }
+
+    /* ── タブバー ──────────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      overflow-x: auto;
+      gap: 4px;
+      padding: 8px 14px;
+      background: #F1F5F9;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+      min-height: 46px;
+      align-items: center;
+    }
+    .tab-bar::-webkit-scrollbar { height: 3px; }
+    .tab-bar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 8px 5px 12px;
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 13px;
+      color: #64748B;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .tab:hover { background: #EFF6FF; border-color: #93C5FD; }
+    .tab.active { background: #EFF6FF; border-color: #3B82F6; color: #1D4ED8; font-weight: 600; }
+
+    .tab-name { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+
+    .tab-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #CBD5E1;
+      font-size: 16px;
+      line-height: 1;
+      padding: 1px 4px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .tab-close:hover { background: #FECACA; color: #DC2626; }
+
+    .tab-hint {
+      font-size: 12px;
+      color: #CBD5E1;
+      padding: 4px 6px;
+      white-space: nowrap;
+    }
 
     /* データ一覧 */
     .data-list {
@@ -167,10 +209,7 @@
       transform: translateX(3px);
     }
     .data-item:active { transform: translateX(0); }
-    .data-item.flash  {
-      background: #F0FDF4;
-      border-color: #6EE7B7;
-    }
+    .data-item.flash  { background: #F0FDF4; border-color: #6EE7B7; }
 
     .item-label {
       font-size: 11px;
@@ -178,7 +217,7 @@
       color: #64748B;
       white-space: nowrap;
       padding-top: 2px;
-      min-width: 72px;
+      min-width: 60px;
     }
     .item-value {
       flex: 1;
@@ -288,26 +327,18 @@
       gap: 7px;
       transition: all 0.18s;
     }
-    .btn-template {
-      background: #F1F5F9;
-      color: #475569;
-    }
+    .btn-template { background: #F1F5F9; color: #475569; }
     .btn-template:hover { background: #E2E8F0; }
-
-    .btn-clear {
-      background: #F1F5F9;
-      color: #475569;
-    }
+    .btn-clear    { background: #F1F5F9; color: #475569; }
     .btn-clear:hover { background: #E2E8F0; }
-
     .btn-copy {
       flex: 1;
       justify-content: center;
       background: linear-gradient(135deg, #059669, #10B981);
       color: white;
     }
-    .btn-copy:hover    { opacity: 0.88; }
-    .btn-copy.success  { background: linear-gradient(135deg, #047857, #059669); }
+    .btn-copy:hover   { opacity: 0.88; }
+    .btn-copy.success { background: linear-gradient(135deg, #047857, #059669); }
 
     /* ── トースト通知 ──────────────────────────────── */
     .toast {
@@ -351,22 +382,29 @@
 
     <!-- ── 左パネル：データ一覧 ──────────────────── -->
     <div class="left-panel">
+
+      <!-- アップロードエリア -->
       <div class="left-top">
-        <div class="upload-area" id="drop-zone">
-          <button class="btn-upload" id="btn-upload">📂 XMLファイルを読み込む</button>
-          <p>またはここにファイルをドラッグ＆ドロップ</p>
-          <input type="file" id="file-input" accept=".xml" style="display:none">
+        <div class="upload-row">
+          <button class="btn-upload" id="btn-upload">📂 XMLを追加</button>
+          <a class="sample-link" id="btn-sample">▶ サンプルで試す</a>
         </div>
-        <a class="sample-link" id="btn-sample">▶ サンプルデータで試す</a>
+        <input type="file" id="file-input" accept=".xml" style="display:none">
         <div class="error-box" id="error-box">
           <span>⚠️</span><span id="error-text"></span>
         </div>
       </div>
 
+      <!-- タブバー -->
+      <div class="tab-bar" id="tab-bar">
+        <span class="tab-hint">XMLを読み込むとタブが追加されます</span>
+      </div>
+
+      <!-- データ一覧 -->
       <div class="data-list" id="data-list">
         <div class="empty-state">
           <div class="icon">📋</div>
-          <p>XMLファイルを読み込むと<br>処方データが表示されます<br><br>項目をクリックすると<br>右の編集エリアへ転記されます</p>
+          <p>XMLファイルを読み込むと<br>指導文書が表示されます<br><br>項目をクリックすると<br>右の編集エリアへ転記されます</p>
         </div>
       </div>
 
@@ -403,39 +441,14 @@
 
   <script>
     // ─────────────────────────────────────────────────────────────
-    //  XML 解析関数
-    //  ★ここをXML構造に合わせて修正する★
-    //
-    //  引数: xmlDoc (DOMParser で解析済みの XMLDocument)
-    //  返値: [ { group: 'グループ名', icon: '絵文字', items: [ { label, value } ] }, ... ]
-    //
-    //  現在のサンプル構造:
-    //    <yakureki>
-    //      <patient>
-    //        <name>山田 太郎</name>
-    //        <age>65</age>
-    //      </patient>
-    //      <prescription>
-    //        <drugs>
-    //          <drug>
-    //            <name>薬品名</name>
-    //            <dosage>用量</dosage>
-    //            <frequency>服用方法</frequency>
-    //            <days>日数</days>
-    //          </drug>
-    //        </drugs>
-    //        <notes>注意事項テキスト</notes>
-    //      </prescription>
-    //    </yakureki>
+    //  XML 解析関数（PAD指導マスタ構造）
     // ─────────────────────────────────────────────────────────────
     function parseXML(xmlDoc) {
       const groups = [];
 
-      // PAD指導マスタ構造のパース
       const records = Array.from(xmlDoc.getElementsByTagName('PAD指導マスタ'));
       if (!records.length) return groups;
 
-      // 削除フラグがfalseのものだけ抽出・表示順でソート
       const filtered = records
         .filter(node => getText(node, '削除フラグ') !== 'true')
         .sort((a, b) => {
@@ -446,7 +459,6 @@
 
       if (!filtered.length) return groups;
 
-      // 中分類ごとにグループ化
       const categoryMap = new Map();
       filtered.forEach(node => {
         const category = getText(node, '中分類') || 'その他';
@@ -464,14 +476,28 @@
       return groups;
     }
 
-    // 指定タグのテキストを取得するヘルパー
     function getText(el, tag) {
-      const node = el.querySelector(tag);
-      return node ? (node.textContent?.trim() || '') : '';
+      const node = el.querySelector ? el.querySelector(tag) : null;
+      if (!node) {
+        // querySelector が失敗する場合は getElementsByTagName を使う
+        const nodes = el.getElementsByTagName ? el.getElementsByTagName(tag) : [];
+        return nodes[0] ? (nodes[0].textContent?.trim() || '') : '';
+      }
+      return node.textContent?.trim() || '';
+    }
+
+    function parseXMLFromText(text) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(text, 'application/xml');
+      const parseErr = xmlDoc.querySelector('parsererror');
+      if (parseErr) throw new Error('XMLの構造が正しくありません。');
+      const data = parseXML(xmlDoc);
+      if (!data.length) throw new Error('対応する項目が見つかりませんでした。');
+      return data;
     }
 
     // ─────────────────────────────────────────────────────────────
-    //  サンプル XML（テスト用。職場XMLに切り替え後は不要）
+    //  サンプル XML
     // ─────────────────────────────────────────────────────────────
     const SAMPLE_XML = `<?xml version="1.0" encoding="utf-8"?>
 <DataTable>
@@ -506,20 +532,121 @@
     // ─────────────────────────────────────────────────────────────
     //  薬歴テンプレート
     // ─────────────────────────────────────────────────────────────
-    const TEMPLATE = `【服薬状況】
-【副作用・体調変化】
-【疾患状況・検査値】
-【患者への指導内容】
-【次回確認事項】
+    const TEMPLATE = `【S】
+【O】
+【A】
+【P】
 `;
+
+    // ─────────────────────────────────────────────────────────────
+    //  タブ管理・localStorage
+    // ─────────────────────────────────────────────────────────────
+    const LS_TABS   = 'yakureki_tabs';
+    const LS_ACTIVE = 'yakureki_active_tab';
+
+    let tabs        = []; // [{ id, name, xmlText, parsedData }]
+    let activeTabId = null;
+
+    function saveTabs() {
+      const toSave = tabs.map(({ id, name, xmlText }) => ({ id, name, xmlText }));
+      localStorage.setItem(LS_TABS,   JSON.stringify(toSave));
+      localStorage.setItem(LS_ACTIVE, activeTabId || '');
+    }
+
+    function loadTabsFromStorage() {
+      try {
+        const saved      = JSON.parse(localStorage.getItem(LS_TABS) || '[]');
+        const savedActive = localStorage.getItem(LS_ACTIVE) || '';
+
+        tabs = saved.map(({ id, name, xmlText }) => {
+          try {
+            const parsedData = parseXMLFromText(xmlText);
+            return { id, name, xmlText, parsedData };
+          } catch { return null; }
+        }).filter(Boolean);
+
+        const exists = tabs.find(t => t.id === savedActive);
+        activeTabId = exists ? savedActive : (tabs[0]?.id || null);
+      } catch {
+        tabs = [];
+        activeTabId = null;
+      }
+      renderTabs();
+      renderActiveData();
+    }
+
+    function addTab(name, xmlText, parsedData) {
+      const id = Date.now().toString();
+      tabs.push({ id, name, xmlText, parsedData });
+      activeTabId = id;
+      saveTabs();
+      renderTabs();
+      renderActiveData();
+    }
+
+    function removeTab(id) {
+      const name = tabs.find(t => t.id === id)?.name || '';
+      if (!confirm(`「${name}」を削除しますか？`)) return;
+      tabs = tabs.filter(t => t.id !== id);
+      if (activeTabId === id) {
+        activeTabId = tabs[tabs.length - 1]?.id || null;
+      }
+      saveTabs();
+      renderTabs();
+      renderActiveData();
+    }
+
+    function switchTab(id) {
+      activeTabId = id;
+      saveTabs();
+      renderTabs();
+      renderActiveData();
+    }
+
+    function renderTabs() {
+      tabBar.innerHTML = '';
+      if (!tabs.length) {
+        const hint = document.createElement('span');
+        hint.className = 'tab-hint';
+        hint.textContent = 'XMLを読み込むとタブが追加されます';
+        tabBar.appendChild(hint);
+        return;
+      }
+      tabs.forEach(({ id, name }) => {
+        const tab = document.createElement('div');
+        tab.className = 'tab' + (id === activeTabId ? ' active' : '');
+        tab.innerHTML = `<span class="tab-name" title="${escapeHtml(name)}">${escapeHtml(name)}</span><button class="tab-close" title="削除">×</button>`;
+        tab.addEventListener('click', (e) => {
+          if (!e.target.classList.contains('tab-close')) switchTab(id);
+        });
+        tab.querySelector('.tab-close').addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeTab(id);
+        });
+        tabBar.appendChild(tab);
+      });
+    }
+
+    function renderActiveData() {
+      const activeTab = tabs.find(t => t.id === activeTabId);
+      if (activeTab) {
+        currentParsedData = activeTab.parsedData;
+        renderDataList();
+        btnTransferAll.disabled = false;
+      } else {
+        currentParsedData = [];
+        renderEmpty();
+        btnTransferAll.disabled = true;
+      }
+    }
 
     // ─────────────────────────────────────────────────────────────
     //  DOM 参照
     // ─────────────────────────────────────────────────────────────
     const fileInput      = document.getElementById('file-input');
     const btnUpload      = document.getElementById('btn-upload');
-    const dropZone       = document.getElementById('drop-zone');
     const btnSample      = document.getElementById('btn-sample');
+    const tabBar         = document.getElementById('tab-bar');
     const dataList       = document.getElementById('data-list');
     const btnTransferAll = document.getElementById('btn-transfer-all');
     const errorBox       = document.getElementById('error-box');
@@ -531,7 +658,7 @@
     const btnCopy        = document.getElementById('btn-copy');
     const toast          = document.getElementById('toast');
 
-    let parsedData = [];
+    let currentParsedData = [];
 
     // ─────────────────────────────────────────────────────────────
     //  ファイル読み込み
@@ -543,16 +670,8 @@
       e.target.value = '';
     });
 
-    dropZone.addEventListener('dragover',  (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-    dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragover'));
-    dropZone.addEventListener('drop',      (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
-    });
-
     btnSample.addEventListener('click', () => {
-      processXMLText(SAMPLE_XML, 'サンプルデータを読み込みました');
+      processXMLText(SAMPLE_XML, 'サンプル');
     });
 
     function loadFile(file) {
@@ -560,37 +679,19 @@
         return showError('XMLファイル（.xml）を選択してください。');
       }
       const reader = new FileReader();
-      reader.onload  = (e) => processXMLText(e.target.result, 'ファイルを読み込みました');
+      reader.onload  = (e) => processXMLText(e.target.result, file.name.replace(/\.xml$/i, ''));
       reader.onerror = ()  => showError('ファイルの読み込みに失敗しました。');
       reader.readAsText(file, 'UTF-8');
     }
 
-    function processXMLText(text, successMsg) {
+    function processXMLText(text, tabName) {
       hideError();
       try {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(text, 'application/xml');
-
-        // パースエラー確認
-        const parseErr = xmlDoc.querySelector('parsererror');
-        if (parseErr) {
-          throw new Error('XMLの構造が正しくありません: ' + parseErr.textContent.trim().slice(0, 100));
-        }
-
-        parsedData = parseXML(xmlDoc);
-
-        if (!parsedData.length || parsedData.every(g => !g.items.length)) {
-          throw new Error('対応する項目が見つかりませんでした。XML構造を確認してください。');
-        }
-
-        renderDataList();
-        btnTransferAll.disabled = false;
-        showToast('✅ ' + successMsg);
+        const parsedData = parseXMLFromText(text);
+        addTab(tabName, text, parsedData);
+        showToast(`✅ 「${tabName}」を読み込みました`);
       } catch (err) {
         showError(err.message);
-        renderEmpty();
-        parsedData = [];
-        btnTransferAll.disabled = true;
       }
     }
 
@@ -599,7 +700,7 @@
     // ─────────────────────────────────────────────────────────────
     function renderDataList() {
       dataList.innerHTML = '';
-      parsedData.forEach(({ group, icon, items }) => {
+      currentParsedData.forEach(({ group, icon, items }) => {
         if (!items.length) return;
 
         const groupEl = document.createElement('div');
@@ -619,7 +720,7 @@
             <div class="item-arrow">→</div>
           `;
           itemEl.addEventListener('click', () => {
-            appendToEditor(label, value);
+            appendToEditor(value);
             itemEl.classList.add('flash');
             setTimeout(() => itemEl.classList.remove('flash'), 900);
           });
@@ -634,19 +735,19 @@
       dataList.innerHTML = `
         <div class="empty-state">
           <div class="icon">📋</div>
-          <p>XMLファイルを読み込むと<br>処方データが表示されます</p>
+          <p>XMLファイルを読み込むと<br>指導文書が表示されます</p>
         </div>`;
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
     // ─────────────────────────────────────────────────────────────
     //  転記機能
     // ─────────────────────────────────────────────────────────────
-    function appendToEditor(label, value) {
-      const line = `【${label}】${value}\n`;
+    function appendToEditor(value) {
+      const line = `${value}\n`;
       if (editor.value && !editor.value.endsWith('\n')) editor.value += '\n';
       editor.value += line;
       updateCharCount();
@@ -655,8 +756,8 @@
     }
 
     btnTransferAll.addEventListener('click', () => {
-      if (!parsedData.length) return;
-      const lines = parsedData.flatMap(g => g.items.map(i => `【${i.label}】${i.value}`));
+      if (!currentParsedData.length) return;
+      const lines = currentParsedData.flatMap(g => g.items.map(i => i.value));
       if (editor.value.trim()) {
         if (!confirm('現在の内容に上書きして全項目を転記しますか？')) return;
       }
@@ -684,7 +785,6 @@
       editor.value = TEMPLATE;
       updateCharCount();
       editor.focus();
-      editor.setSelectionRange(6, 6); // 【服薬状況】の直後にカーソル
     });
 
     btnClear.addEventListener('click', () => {
@@ -733,6 +833,11 @@
     function hideError() {
       errorBox.classList.remove('show');
     }
+
+    // ─────────────────────────────────────────────────────────────
+    //  起動時にlocalStorageから復元
+    // ─────────────────────────────────────────────────────────────
+    loadTabsFromStorage();
   </script>
 </body>
 </html>
