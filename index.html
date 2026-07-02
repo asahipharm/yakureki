@@ -431,37 +431,35 @@
     function parseXML(xmlDoc) {
       const groups = [];
 
-      // ── ここをXML構造に合わせて修正する（患者情報） ──
-      const patientItems = [];
-      const name = getText(xmlDoc, 'name');
-      const age  = getText(xmlDoc, 'age');
-      if (name) patientItems.push({ label: '患者名', value: name });
-      if (age)  patientItems.push({ label: '年齢',   value: age + '歳' });
-      if (patientItems.length)
-        groups.push({ group: '患者情報', icon: '👤', items: patientItems });
+      // PAD指導マスタ構造のパース
+      const records = Array.from(xmlDoc.getElementsByTagName('PAD指導マスタ'));
+      if (!records.length) return groups;
 
-      // ── ここをXML構造に合わせて修正する（処方薬） ──
-      const drugNodes = xmlDoc.querySelectorAll('drug');
-      if (drugNodes.length) {
-        const drugItems = [];
-        drugNodes.forEach((node, i) => {
-          const drugName  = getText(node, 'name')      || node.textContent?.trim() || '';
-          const dosage    = getText(node, 'dosage')    || '';
-          const frequency = getText(node, 'frequency') || '';
-          const days      = getText(node, 'days')      || '';
-          if (!drugName) return;
-          const detail = [dosage, frequency, days].filter(Boolean).join('　');
-          const value  = detail ? drugName + '\n' + detail : drugName;
-          drugItems.push({ label: `処方薬 ${i + 1}`, value });
+      // 削除フラグがfalseのものだけ抽出・表示順でソート
+      const filtered = records
+        .filter(node => getText(node, '削除フラグ') !== 'true')
+        .sort((a, b) => {
+          const oa = parseInt(getText(a, '表示順')) || 0;
+          const ob = parseInt(getText(b, '表示順')) || 0;
+          return oa - ob;
         });
-        if (drugItems.length)
-          groups.push({ group: '処方内容', icon: '💊', items: drugItems });
-      }
 
-      // ── ここをXML構造に合わせて修正する（注意事項） ──
-      const notes = getText(xmlDoc, 'notes');
-      if (notes)
-        groups.push({ group: '注意事項', icon: '⚠️', items: [{ label: '注意事項', value: notes }] });
+      if (!filtered.length) return groups;
+
+      // 中分類ごとにグループ化
+      const categoryMap = new Map();
+      filtered.forEach(node => {
+        const category = getText(node, '中分類') || 'その他';
+        const code     = getText(node, 'コード');
+        const text     = getText(node, '文書');
+        if (!text) return;
+        if (!categoryMap.has(category)) categoryMap.set(category, []);
+        categoryMap.get(category).push({ label: `No.${code}`, value: text });
+      });
+
+      categoryMap.forEach((items, category) => {
+        groups.push({ group: `カテゴリ ${category}`, icon: '📋', items });
+      });
 
       return groups;
     }
@@ -475,30 +473,35 @@
     // ─────────────────────────────────────────────────────────────
     //  サンプル XML（テスト用。職場XMLに切り替え後は不要）
     // ─────────────────────────────────────────────────────────────
-    const SAMPLE_XML = `<?xml version="1.0" encoding="UTF-8"?>
-<yakureki>
-  <patient>
-    <name>山田 太郎</name>
-    <age>65</age>
-  </patient>
-  <prescription>
-    <drugs>
-      <drug>
-        <name>アムロジピン錠5mg「トーワ」</name>
-        <dosage>1錠</dosage>
-        <frequency>1日1回 朝食後</frequency>
-        <days>28日分</days>
-      </drug>
-      <drug>
-        <name>メトホルミン塩酸塩錠250mg「日医工」</name>
-        <dosage>2錠</dosage>
-        <frequency>1日2回 朝夕食後</frequency>
-        <days>28日分</days>
-      </drug>
-    </drugs>
-    <notes>グレープフルーツとの相互作用に注意。低血糖症状（冷汗・動悸・手の震え）が出た場合はすぐに医師・薬局へ連絡するよう指導済み。</notes>
-  </prescription>
-</yakureki>`;
+    const SAMPLE_XML = `<?xml version="1.0" encoding="utf-8"?>
+<DataTable>
+  <diffgr:diffgram xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
+                   xmlns:diffgr="urn:schemas-microsoft-com:xml-diffgram-v1">
+    <DocumentElement>
+      <PAD指導マスタ diffgr:id="PAD指導マスタ1" msdata:rowOrder="0">
+        <中分類>51</中分類>
+        <コード>605</コード>
+        <文書>クレマスチンは眠気を感じることがあります。車の運転や高所作業にはご注意ください。</文書>
+        <削除フラグ>false</削除フラグ>
+        <表示順>1</表示順>
+      </PAD指導マスタ>
+      <PAD指導マスタ diffgr:id="PAD指導マスタ2" msdata:rowOrder="1">
+        <中分類>51</中分類>
+        <コード>606</コード>
+        <文書>メプラゾンは気管支を広げて呼吸を楽にする薬です。定期的にご使用ください。</文書>
+        <削除フラグ>false</削除フラグ>
+        <表示順>2</表示順>
+      </PAD指導マスタ>
+      <PAD指導マスタ diffgr:id="PAD指導マスタ3" msdata:rowOrder="2">
+        <中分類>52</中分類>
+        <コード>701</コード>
+        <文書>この薬は食後に服用してください。空腹時の服用は胃への刺激が強くなることがあります。</文書>
+        <削除フラグ>false</削除フラグ>
+        <表示順>1</表示順>
+      </PAD指導マスタ>
+    </DocumentElement>
+  </diffgr:diffgram>
+</DataTable>`;
 
     // ─────────────────────────────────────────────────────────────
     //  薬歴テンプレート
