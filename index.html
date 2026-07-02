@@ -233,6 +233,33 @@
       flex-shrink: 0;
     }
 
+    /* カテゴリフィルター */
+    .filter-bar {
+      padding: 8px 14px;
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+    .filter-select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #1e293b;
+      background: #F8FAFC;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: #3B82F6; background-color: #EFF6FF; }
+    .filter-select:disabled { opacity: 0.4; cursor: not-allowed; }
+
     /* すべて転記ボタン */
     .bottom-bar {
       padding: 12px 14px;
@@ -398,6 +425,13 @@
       <!-- タブバー -->
       <div class="tab-bar" id="tab-bar">
         <span class="tab-hint">XMLを読み込むとタブが追加されます</span>
+      </div>
+
+      <!-- カテゴリフィルター -->
+      <div class="filter-bar">
+        <select class="filter-select" id="category-select" disabled>
+          <option value="">すべてのカテゴリ</option>
+        </select>
       </div>
 
       <!-- データ一覧 -->
@@ -631,34 +665,61 @@
       const activeTab = tabs.find(t => t.id === activeTabId);
       if (activeTab) {
         currentParsedData = activeTab.parsedData;
+        renderCategoryFilter();
         renderDataList();
         btnTransferAll.disabled = false;
       } else {
         currentParsedData = [];
+        renderCategoryFilter();
         renderEmpty();
         btnTransferAll.disabled = true;
       }
     }
 
+    function renderCategoryFilter() {
+      const prevValue = categorySelect.value;
+      categorySelect.innerHTML = '<option value="">すべてのカテゴリ</option>';
+
+      if (!currentParsedData.length) {
+        categorySelect.disabled = true;
+        return;
+      }
+
+      currentParsedData.forEach(({ group }) => {
+        const opt = document.createElement('option');
+        opt.value = group;
+        opt.textContent = group;
+        categorySelect.appendChild(opt);
+      });
+
+      // 同名カテゴリが存在すれば前の選択を維持
+      const stillExists = currentParsedData.some(g => g.group === prevValue);
+      categorySelect.value = stillExists ? prevValue : '';
+      categorySelect.disabled = false;
+    }
+
     // ─────────────────────────────────────────────────────────────
     //  DOM 参照
     // ─────────────────────────────────────────────────────────────
-    const fileInput      = document.getElementById('file-input');
-    const btnUpload      = document.getElementById('btn-upload');
-    const btnSample      = document.getElementById('btn-sample');
-    const tabBar         = document.getElementById('tab-bar');
-    const dataList       = document.getElementById('data-list');
-    const btnTransferAll = document.getElementById('btn-transfer-all');
-    const errorBox       = document.getElementById('error-box');
-    const errorText      = document.getElementById('error-text');
-    const editor         = document.getElementById('editor');
-    const charCount      = document.getElementById('char-count');
-    const btnTemplate    = document.getElementById('btn-template');
-    const btnClear       = document.getElementById('btn-clear');
-    const btnCopy        = document.getElementById('btn-copy');
-    const toast          = document.getElementById('toast');
+    const fileInput       = document.getElementById('file-input');
+    const btnUpload       = document.getElementById('btn-upload');
+    const btnSample       = document.getElementById('btn-sample');
+    const tabBar          = document.getElementById('tab-bar');
+    const categorySelect  = document.getElementById('category-select');
+    const dataList        = document.getElementById('data-list');
+    const btnTransferAll  = document.getElementById('btn-transfer-all');
+    const errorBox        = document.getElementById('error-box');
+    const errorText       = document.getElementById('error-text');
+    const editor          = document.getElementById('editor');
+    const charCount       = document.getElementById('char-count');
+    const btnTemplate     = document.getElementById('btn-template');
+    const btnClear        = document.getElementById('btn-clear');
+    const btnCopy         = document.getElementById('btn-copy');
+    const toast           = document.getElementById('toast');
 
     let currentParsedData = [];
+
+    categorySelect.addEventListener('change', () => renderDataList());
 
     // ─────────────────────────────────────────────────────────────
     //  ファイル読み込み
@@ -700,7 +761,12 @@
     // ─────────────────────────────────────────────────────────────
     function renderDataList() {
       dataList.innerHTML = '';
-      currentParsedData.forEach(({ group, icon, items }) => {
+      const filterValue = categorySelect.value;
+      const dataToShow = filterValue
+        ? currentParsedData.filter(g => g.group === filterValue)
+        : currentParsedData;
+
+      dataToShow.forEach(({ group, icon, items }) => {
         if (!items.length) return;
 
         const groupEl = document.createElement('div');
@@ -729,6 +795,10 @@
 
         dataList.appendChild(groupEl);
       });
+
+      if (!dataToShow.length) {
+        dataList.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>該当する項目がありません</p></div>';
+      }
     }
 
     function renderEmpty() {
