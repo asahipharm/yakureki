@@ -47,7 +47,7 @@
       display: flex;
       flex-direction: column;
       background: #fff;
-      border-right: 1px solid #e2e8f0;
+      border-left: 1px solid #e2e8f0;
       overflow: hidden;
     }
 
@@ -407,7 +407,28 @@
 
   <div class="main">
 
-    <!-- ── 左パネル：データ一覧 ──────────────────── -->
+    <!-- ── 左パネル：薬歴編集エリア ──────────────── -->
+    <div class="right-panel">
+      <div class="right-header">
+        <h2>✏️ 薬歴入力エリア</h2>
+        <span class="char-count" id="char-count">0 文字</span>
+      </div>
+
+      <div class="editor-wrap">
+        <textarea
+          id="editor"
+          placeholder="右のパネルから項目をクリックして転記するか、直接入力してください。"
+        ></textarea>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-template" id="btn-template">📝 テンプレ挿入</button>
+        <button class="btn btn-clear"    id="btn-clear"   >🗑 クリア</button>
+        <button class="btn btn-copy"     id="btn-copy"    >📋 コピーする</button>
+      </div>
+    </div>
+
+    <!-- ── 右パネル：データ一覧 ──────────────────── -->
     <div class="left-panel">
 
       <!-- アップロードエリア -->
@@ -438,7 +459,7 @@
       <div class="data-list" id="data-list">
         <div class="empty-state">
           <div class="icon">📋</div>
-          <p>XMLファイルを読み込むと<br>指導文書が表示されます<br><br>項目をクリックすると<br>右の編集エリアへ転記されます</p>
+          <p>XMLファイルを読み込むと<br>指導文書が表示されます<br><br>項目をクリックすると<br>左の編集エリアへ転記されます</p>
         </div>
       </div>
 
@@ -449,26 +470,6 @@
       </div>
     </div>
 
-    <!-- ── 右パネル：薬歴編集エリア ──────────────── -->
-    <div class="right-panel">
-      <div class="right-header">
-        <h2>✏️ 薬歴入力エリア</h2>
-        <span class="char-count" id="char-count">0 文字</span>
-      </div>
-
-      <div class="editor-wrap">
-        <textarea
-          id="editor"
-          placeholder="左のパネルから項目をクリックして転記するか、直接入力してください。"
-        ></textarea>
-      </div>
-
-      <div class="action-bar">
-        <button class="btn btn-template" id="btn-template">📝 テンプレ挿入</button>
-        <button class="btn btn-clear"    id="btn-clear"   >🗑 クリア</button>
-        <button class="btn btn-copy"     id="btn-copy"    >📋 コピーする</button>
-      </div>
-    </div>
   </div>
 
   <div class="toast" id="toast"></div>
