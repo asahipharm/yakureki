@@ -681,20 +681,28 @@
       const prevValue = categorySelect.value;
       categorySelect.innerHTML = '<option value="">すべてのカテゴリ</option>';
 
-      if (!currentParsedData.length) {
+      const hasTabs = tabs.some(t => t.parsedData.length > 0);
+      if (!hasTabs) {
         categorySelect.disabled = true;
         return;
       }
 
-      currentParsedData.forEach(({ group }) => {
-        const opt = document.createElement('option');
-        opt.value = group;
-        opt.textContent = group;
-        categorySelect.appendChild(opt);
+      // タブごとに optgroup を作成
+      tabs.forEach(tab => {
+        if (!tab.parsedData.length) return;
+        const grp = document.createElement('optgroup');
+        grp.label = tab.name;
+        tab.parsedData.forEach(({ group }) => {
+          const opt = document.createElement('option');
+          opt.value = `${tab.id}::${group}`;
+          opt.textContent = group;
+          grp.appendChild(opt);
+        });
+        categorySelect.appendChild(grp);
       });
 
-      // 同名カテゴリが存在すれば前の選択を維持
-      const stillExists = currentParsedData.some(g => g.group === prevValue);
+      // 前の選択を維持できるか確認
+      const stillExists = [...categorySelect.options].some(o => o.value === prevValue);
       categorySelect.value = stillExists ? prevValue : '';
       categorySelect.disabled = false;
     }
@@ -720,7 +728,22 @@
 
     let currentParsedData = [];
 
-    categorySelect.addEventListener('change', () => renderDataList());
+    categorySelect.addEventListener('change', () => {
+      const val = categorySelect.value;
+      if (val) {
+        const [tabId] = val.split('::');
+        if (tabId !== activeTabId) {
+          // 別タブのカテゴリが選ばれたらタブを切り替える
+          activeTabId = tabId;
+          saveTabs();
+          renderTabs();
+          const activeTab = tabs.find(t => t.id === activeTabId);
+          currentParsedData = activeTab ? activeTab.parsedData : [];
+          btnTransferAll.disabled = !currentParsedData.length;
+        }
+      }
+      renderDataList();
+    });
 
     // ─────────────────────────────────────────────────────────────
     //  ファイル読み込み
@@ -763,9 +786,13 @@
     function renderDataList() {
       dataList.innerHTML = '';
       const filterValue = categorySelect.value;
-      const dataToShow = filterValue
-        ? currentParsedData.filter(g => g.group === filterValue)
-        : currentParsedData;
+      let dataToShow;
+      if (!filterValue) {
+        dataToShow = currentParsedData;
+      } else {
+        const [, groupName] = filterValue.split('::');
+        dataToShow = currentParsedData.filter(g => g.group === groupName);
+      }
 
       dataToShow.forEach(({ group, icon, items }) => {
         if (!items.length) return;
