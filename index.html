@@ -578,6 +578,42 @@
 
   <div class="toast" id="toast"></div>
 
+  <!-- ── 手動入力モーダル ────────────────────────────── -->
+  <div class="modal-overlay" id="manual-modal" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>✏️ 手動でデータ追加</h3>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-row">
+          <label>タブ名</label>
+          <input type="text" id="manual-tab-name" placeholder="例：よく使うフレーズ">
+        </div>
+        <hr class="modal-divider">
+        <div class="field-row">
+          <label>カテゴリ名</label>
+          <input type="text" id="manual-category" placeholder="例：飲み合わせ、副作用など">
+        </div>
+        <div class="field-row">
+          <label>指導テキスト</label>
+          <textarea id="manual-text" placeholder="指導文書を入力してください"></textarea>
+        </div>
+        <button class="btn-modal-add" id="btn-modal-add-item">+ この内容を追加</button>
+        <hr class="modal-divider">
+        <div style="font-size:12px;font-weight:700;color:#64748B;letter-spacing:.05em">追加した項目</div>
+        <div class="manual-item-list" id="manual-item-list">
+          <p class="empty-hint">まだ項目がありません</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-save" id="btn-modal-save">保存してタブに追加</button>
+        <button class="btn-modal-export" id="btn-modal-export" style="display:none;padding:12px 14px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;color:#15803D;font-size:13px;font-weight:700;cursor:pointer" title="XMLファイルとしてダウンロード">📥 XML書き出し</button>
+        <button class="btn-modal-cancel" id="btn-modal-cancel">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ─────────────────────────────────────────────────────────────
     //  XML 解析関数（PAD指導マスタ構造）
@@ -1231,41 +1267,5 @@
     // ─────────────────────────────────────────────────────────────
     loadTabsFromStorage();
   </script>
-
-  <!-- ── 手動入力モーダル ────────────────────────────── -->
-  <div class="modal-overlay" id="manual-modal" style="display:none">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3>✏️ 手動でデータ追加</h3>
-        <button class="modal-close" id="modal-close">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="field-row">
-          <label>タブ名</label>
-          <input type="text" id="manual-tab-name" placeholder="例：よく使うフレーズ">
-        </div>
-        <hr class="modal-divider">
-        <div class="field-row">
-          <label>カテゴリ名</label>
-          <input type="text" id="manual-category" placeholder="例：飲み合わせ、副作用など">
-        </div>
-        <div class="field-row">
-          <label>指導テキスト</label>
-          <textarea id="manual-text" placeholder="指導文書を入力してください"></textarea>
-        </div>
-        <button class="btn-modal-add" id="btn-modal-add-item">+ この内容を追加</button>
-        <hr class="modal-divider">
-        <div style="font-size:12px;font-weight:700;color:#64748B;letter-spacing:.05em">追加した項目</div>
-        <div class="manual-item-list" id="manual-item-list">
-          <p class="empty-hint">まだ項目がありません</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-modal-save" id="btn-modal-save">保存してタブに追加</button>
-        <button class="btn-modal-export" id="btn-modal-export" style="display:none;padding:12px 14px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;color:#15803D;font-size:13px;font-weight:700;cursor:pointer" title="XMLファイルとしてダウンロード">📥 XML書き出し</button>
-        <button class="btn-modal-cancel" id="btn-modal-cancel">キャンセル</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
