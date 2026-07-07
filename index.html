@@ -875,7 +875,10 @@
         tab.parsedData.forEach(({ group }) => {
           const opt = document.createElement('option');
           opt.value = `${tab.id}::${group}`;
-          opt.textContent = group;
+          const suffix = group.startsWith(tab.name)
+            ? group.slice(tab.name.length).trim()
+            : group;
+          opt.textContent = suffix || tab.name;
           grp.appendChild(opt);
         });
         categorySelect.appendChild(grp);
