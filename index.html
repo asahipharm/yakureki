@@ -260,30 +260,7 @@
     .filter-select:focus { border-color: #3B82F6; background-color: #EFF6FF; }
     .filter-select:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* すべて転記ボタン */
-    .bottom-bar {
-      padding: 12px 14px;
-      border-top: 1px solid #e2e8f0;
-      flex-shrink: 0;
-    }
-    .btn-transfer-all {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, #1D4ED8, #3B82F6);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: opacity 0.2s;
-    }
-    .btn-transfer-all:hover    { opacity: 0.88; }
-    .btn-transfer-all:disabled { opacity: 0.35; cursor: not-allowed; }
+    .bottom-bar { display: none; }
 
     /* ── 右パネル ─────────────────────────────────── */
     .right-panel {
@@ -567,11 +544,7 @@
         </div>
       </div>
 
-      <div class="bottom-bar">
-        <button class="btn-transfer-all" id="btn-transfer-all" disabled>
-          ↓ すべて転記する
-        </button>
-      </div>
+      <div class="bottom-bar"></div>
     </div>
 
   </div>
@@ -618,7 +591,7 @@
     // ─────────────────────────────────────────────────────────────
     //  XML 解析関数（PAD指導マスタ構造）
     // ─────────────────────────────────────────────────────────────
-    function parseXML(xmlDoc) {
+    function parseXML(xmlDoc, tabName) {
       const groups = [];
 
       const records = Array.from(xmlDoc.getElementsByTagName('PAD指導マスタ'));
@@ -644,8 +617,12 @@
         categoryMap.get(category).push({ label: `No.${code}`, value: text });
       });
 
+      const multiCategory = categoryMap.size > 1;
       categoryMap.forEach((items, category) => {
-        groups.push({ group: `カテゴリ ${category}`, icon: '📋', items });
+        const groupLabel = tabName
+          ? (multiCategory ? `${tabName}（${category}）` : tabName)
+          : `カテゴリ ${category}`;
+        groups.push({ group: groupLabel, icon: '📋', items });
       });
 
       return groups;
@@ -661,12 +638,12 @@
       return node.textContent?.trim() || '';
     }
 
-    function parseXMLFromText(text) {
+    function parseXMLFromText(text, tabName) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(text, 'application/xml');
       const parseErr = xmlDoc.querySelector('parsererror');
       if (parseErr) throw new Error('XMLの構造が正しくありません。');
-      const data = parseXML(xmlDoc);
+      const data = parseXML(xmlDoc, tabName);
       if (!data.length) throw new Error('対応する項目が見つかりませんでした。');
       return data;
     }
@@ -789,7 +766,7 @@
               const parsedData = buildManualParsedData(items || []);
               return { id, name, type: 'manual', xmlText: null, items: items || [], parsedData };
             }
-            const parsedData = parseXMLFromText(xmlText);
+            const parsedData = parseXMLFromText(xmlText, name);
             return { id, name, type: 'xml', xmlText, parsedData };
           } catch { return null; }
         }).filter(Boolean);
@@ -873,12 +850,10 @@
         currentParsedData = activeTab.parsedData;
         renderCategoryFilter();
         renderDataList();
-        btnTransferAll.disabled = false;
       } else {
         currentParsedData = [];
         renderCategoryFilter();
         renderEmpty();
-        btnTransferAll.disabled = true;
       }
     }
 
@@ -932,7 +907,6 @@
     const modalClose      = document.getElementById('modal-close');
     const categorySelect  = document.getElementById('category-select');
     const dataList        = document.getElementById('data-list');
-    const btnTransferAll  = document.getElementById('btn-transfer-all');
     const errorBox        = document.getElementById('error-box');
     const errorText       = document.getElementById('error-text');
     const editor          = document.getElementById('editor');
@@ -955,7 +929,6 @@
           renderTabs();
           const activeTab = tabs.find(t => t.id === activeTabId);
           currentParsedData = activeTab ? activeTab.parsedData : [];
-          btnTransferAll.disabled = !currentParsedData.length;
         }
       }
       renderDataList();
@@ -1102,7 +1075,7 @@
     function processXMLText(text, tabName) {
       hideError();
       try {
-        const parsedData = parseXMLFromText(text);
+        const parsedData = parseXMLFromText(text, tabName);
         addTab(tabName, text, parsedData);
         showToast(`✅ 「${tabName}」を読み込みました`);
       } catch (err) {
@@ -1183,21 +1156,6 @@
       editor.focus();
     }
 
-    btnTransferAll.addEventListener('click', () => {
-      if (!currentParsedData.length) return;
-      const lines = currentParsedData.flatMap(g => g.items.map(i => i.value));
-      if (editor.value.trim()) {
-        if (!confirm('現在の内容に上書きして全項目を転記しますか？')) return;
-      }
-      editor.value = lines.join('\n') + '\n';
-      updateCharCount();
-      showToast('✅ すべて転記しました');
-
-      document.querySelectorAll('.data-item').forEach(el => {
-        el.classList.add('flash');
-        setTimeout(() => el.classList.remove('flash'), 900);
-      });
-    });
 
     // ─────────────────────────────────────────────────────────────
     //  エディタ操作
