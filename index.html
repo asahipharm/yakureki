@@ -30,8 +30,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.25);
     }
     header .logo { font-size: 26px; }
-    header h1   { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; }
-    header .sub { font-size: 13px; opacity: 0.65; margin-left: auto; }
+    header h1   { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; }
 
     /* ── メインレイアウト ──────────────────────────── */
     .main {
@@ -47,8 +46,9 @@
       display: flex;
       flex-direction: column;
       background: #fff;
-      border-left: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
       overflow: hidden;
+      order: 1;
     }
 
     .left-top {
@@ -105,39 +105,37 @@
     }
     .error-box.show { display: flex; }
 
-    /* ── タブバー ──────────────────────────────────── */
+    /* ── タブバー（ヘッダー内） ─────────────────────── */
     .tab-bar {
       display: flex;
       overflow-x: auto;
       gap: 4px;
-      padding: 8px 14px;
-      background: #F1F5F9;
-      border-bottom: 1px solid #e2e8f0;
-      flex-shrink: 0;
-      min-height: 46px;
+      padding: 0 8px;
+      flex: 1;
+      min-width: 0;
       align-items: center;
     }
     .tab-bar::-webkit-scrollbar { height: 3px; }
-    .tab-bar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+    .tab-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35); border-radius: 3px; }
 
     .tab {
       display: flex;
       align-items: center;
       gap: 5px;
       padding: 5px 8px 5px 12px;
-      background: #fff;
-      border: 1.5px solid #e2e8f0;
+      background: rgba(255,255,255,0.14);
+      border: 1.5px solid transparent;
       border-radius: 8px;
       cursor: pointer;
       white-space: nowrap;
       font-size: 13px;
-      color: #64748B;
+      color: rgba(255,255,255,0.85);
       transition: all 0.15s;
       flex-shrink: 0;
       user-select: none;
     }
-    .tab:hover { background: #EFF6FF; border-color: #93C5FD; }
-    .tab.active { background: #EFF6FF; border-color: #3B82F6; color: #1D4ED8; font-weight: 600; }
+    .tab:hover { background: rgba(255,255,255,0.25); }
+    .tab.active { background: #fff; border-color: #fff; color: #1D4ED8; font-weight: 600; }
 
     .tab-name { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
 
@@ -156,16 +154,45 @@
 
     .tab-hint {
       font-size: 12px;
-      color: #CBD5E1;
+      color: rgba(255,255,255,0.55);
       padding: 4px 6px;
       white-space: nowrap;
     }
 
-    /* データ一覧 */
+    /* データ一覧（2ペイン分割） */
+    .data-split {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .data-pane {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .data-pane + .data-pane { border-left: 1px solid #e2e8f0; }
+
+    .pane-select {
+      margin: 8px 8px 6px;
+      padding: 6px 8px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #1e293b;
+      background: #F8FAFC;
+      cursor: pointer;
+      outline: none;
+      min-width: 0;
+    }
+    .pane-select:focus { border-color: #3B82F6; }
+    .pane-select:disabled { opacity: 0.4; cursor: not-allowed; }
+
     .data-list {
       flex: 1;
       overflow-y: auto;
-      padding: 14px;
+      padding: 0 8px 10px;
     }
 
     .empty-state {
@@ -176,30 +203,30 @@
     .empty-state .icon { font-size: 52px; margin-bottom: 14px; }
     .empty-state p    { font-size: 14px; line-height: 1.7; }
 
-    .data-group { margin-bottom: 18px; }
+    .data-group { margin-bottom: 12px; }
 
     .group-label {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: #64748B;
       letter-spacing: 0.07em;
-      padding-bottom: 7px;
-      margin-bottom: 7px;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
       border-bottom: 2px solid #EFF6FF;
     }
 
     .data-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 12px 14px;
-      margin-bottom: 6px;
+      gap: 8px;
+      padding: 6px 10px;
+      margin-bottom: 3px;
       background: #F8FAFC;
       border: 1.5px solid transparent;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.15s ease;
     }
@@ -211,54 +238,19 @@
     .data-item:active { transform: translateX(0); }
     .data-item.flash  { background: #F0FDF4; border-color: #6EE7B7; }
 
-    .item-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #64748B;
-      white-space: nowrap;
-      padding-top: 2px;
-      min-width: 60px;
-    }
     .item-value {
       flex: 1;
-      font-size: 15px;
+      font-size: 13px;
       color: #1e293b;
-      line-height: 1.5;
-      word-break: break-all;
-    }
-    .item-arrow {
-      color: #93C5FD;
-      font-size: 18px;
-      align-self: center;
-      flex-shrink: 0;
+      line-height: 1.45;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* カテゴリフィルター */
-    .filter-bar {
-      padding: 8px 14px;
-      background: #fff;
-      border-bottom: 1px solid #e2e8f0;
-      flex-shrink: 0;
-    }
-    .filter-select {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #1e293b;
-      background: #F8FAFC;
-      cursor: pointer;
-      outline: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 32px;
-      transition: border-color 0.2s;
-    }
-    .filter-select:focus { border-color: #3B82F6; background-color: #EFF6FF; }
-    .filter-select:disabled { opacity: 0.4; cursor: not-allowed; }
+    .data-pane .empty-state { padding: 28px 10px; }
+    .data-pane .empty-state .icon { font-size: 34px; margin-bottom: 8px; }
+    .data-pane .empty-state p { font-size: 12px; }
 
     .bottom-bar { display: none; }
 
@@ -269,6 +261,7 @@
       flex-direction: column;
       background: #fff;
       overflow: hidden;
+      order: 2;
     }
 
     .right-header {
@@ -281,7 +274,19 @@
       flex-shrink: 0;
     }
     .right-header h2  { font-size: 16px; font-weight: 700; }
-    .char-count       { font-size: 13px; color: #94A3B8; }
+    .right-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .right-header-actions .btn { padding: 7px 14px; font-size: 13px; }
+    .right-header-actions .btn-copy,
+    .right-header-actions .btn-clear {
+      flex: none;
+      justify-content: center;
+      padding-left: 42px;
+      padding-right: 42px;
+    }
 
     .editor-wrap {
       flex: 1;
@@ -309,16 +314,6 @@
       box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
     }
 
-    /* アクションバー */
-    .action-bar {
-      padding: 12px 16px;
-      border-top: 1px solid #E2E8F0;
-      background: #F8FAFC;
-      display: flex;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
     .btn {
       padding: 12px 18px;
       border: none;
@@ -333,8 +328,8 @@
     }
     .btn-template { background: #F1F5F9; color: #475569; }
     .btn-template:hover { background: #E2E8F0; }
-    .btn-clear    { background: #F1F5F9; color: #475569; }
-    .btn-clear:hover { background: #E2E8F0; }
+    .btn-clear    { background: linear-gradient(135deg, #DC2626, #EF4444); color: white; }
+    .btn-clear:hover { opacity: 0.88; }
     .btn-copy {
       flex: 1;
       justify-content: center;
@@ -482,7 +477,9 @@
   <header>
     <span class="logo">💊</span>
     <h1>薬歴補助ツール</h1>
-    <span class="sub">XMLを読み込んで薬歴を入力 · データはブラウザ内のみで処理</span>
+    <div class="tab-bar" id="tab-bar">
+      <span class="tab-hint">XMLを読み込むとタブが追加されます</span>
+    </div>
   </header>
 
   <div class="main">
@@ -491,21 +488,20 @@
     <div class="right-panel">
       <div class="right-header">
         <h2>✏️ 薬歴入力エリア</h2>
-        <span class="char-count" id="char-count">0 文字</span>
+        <div class="right-header-actions">
+          <button class="btn btn-copy" id="btn-copy">📋 コピーする</button>
+          <button class="btn btn-clear" id="btn-clear">🗑 クリア</button>
+          <button class="btn btn-template" id="btn-template">📝 テンプレ挿入</button>
+        </div>
       </div>
 
       <div class="editor-wrap">
         <textarea
           id="editor"
-          placeholder="右のパネルから項目をクリックして転記するか、直接入力してください。"
+          placeholder="左のパネルから項目をクリックして転記するか、直接入力してください。"
         ></textarea>
       </div>
 
-      <div class="action-bar">
-        <button class="btn btn-template" id="btn-template">📝 テンプレ挿入</button>
-        <button class="btn btn-clear"    id="btn-clear"   >🗑 クリア</button>
-        <button class="btn btn-copy"     id="btn-copy"    >📋 コピーする</button>
-      </div>
     </div>
 
     <!-- ── 右パネル：データ一覧 ──────────────────── -->
@@ -524,23 +520,15 @@
         </div>
       </div>
 
-      <!-- タブバー -->
-      <div class="tab-bar" id="tab-bar">
-        <span class="tab-hint">XMLを読み込むとタブが追加されます</span>
-      </div>
-
-      <!-- カテゴリフィルター -->
-      <div class="filter-bar">
-        <select class="filter-select" id="category-select" disabled>
-          <option value="">すべてのカテゴリ</option>
-        </select>
-      </div>
-
-      <!-- データ一覧 -->
-      <div class="data-list" id="data-list">
-        <div class="empty-state">
-          <div class="icon">📋</div>
-          <p>XMLファイルを読み込むと<br>指導文書が表示されます<br><br>項目をクリックすると<br>左の編集エリアへ転記されます</p>
+      <!-- データ一覧（2ペイン） -->
+      <div class="data-split">
+        <div class="data-pane">
+          <select class="pane-select" id="pane-select-0"></select>
+          <div class="data-list" id="data-list-0"></div>
+        </div>
+        <div class="data-pane">
+          <select class="pane-select" id="pane-select-1"></select>
+          <div class="data-list" id="data-list-1"></div>
         </div>
       </div>
 
@@ -693,11 +681,11 @@
     // ─────────────────────────────────────────────────────────────
     //  タブ管理・localStorage
     // ─────────────────────────────────────────────────────────────
-    const LS_TABS   = 'yakureki_tabs';
-    const LS_ACTIVE = 'yakureki_active_tab';
+    const LS_TABS  = 'yakureki_tabs';
+    const LS_PANES = 'yakureki_panes';
 
-    let tabs        = []; // [{ id, name, xmlText, parsedData }]
-    let activeTabId = null;
+    let tabs       = []; // [{ id, name, xmlText, parsedData }]
+    let paneTabIds = [null, null]; // 左右ペインに表示するタブID
 
     function escapeXml(str) {
       return String(str)
@@ -751,14 +739,14 @@
         xmlText: type === 'manual' ? null : xmlText,
         items:   type === 'manual' ? items  : undefined
       }));
-      localStorage.setItem(LS_TABS,   JSON.stringify(toSave));
-      localStorage.setItem(LS_ACTIVE, activeTabId || '');
+      localStorage.setItem(LS_TABS,  JSON.stringify(toSave));
+      localStorage.setItem(LS_PANES, JSON.stringify(paneTabIds));
     }
 
     function loadTabsFromStorage() {
       try {
-        const saved       = JSON.parse(localStorage.getItem(LS_TABS) || '[]');
-        const savedActive = localStorage.getItem(LS_ACTIVE) || '';
+        const saved      = JSON.parse(localStorage.getItem(LS_TABS) || '[]');
+        const savedPanes = JSON.parse(localStorage.getItem(LS_PANES) || '[null,null]');
 
         tabs = saved.map(({ id, name, type, xmlText, items }) => {
           try {
@@ -771,42 +759,57 @@
           } catch { return null; }
         }).filter(Boolean);
 
-        const exists = tabs.find(t => t.id === savedActive);
-        activeTabId = exists ? savedActive : (tabs[0]?.id || null);
+        paneTabIds = [0, 1].map(i => tabs.find(t => t.id === savedPanes[i])?.id || null);
+        fillEmptyPanes();
       } catch {
         tabs = [];
-        activeTabId = null;
+        paneTabIds = [null, null];
       }
       renderTabs();
-      renderActiveData();
+      renderPanes();
+    }
+
+    // 空いているペインに未表示のタブを割り当てる
+    function fillEmptyPanes() {
+      [0, 1].forEach(i => {
+        if (!paneTabIds[i]) {
+          paneTabIds[i] = tabs.find(t => !paneTabIds.includes(t.id))?.id || null;
+        }
+      });
+    }
+
+    function assignTabToPane(id) {
+      if      (!paneTabIds[0]) paneTabIds[0] = id;
+      else if (!paneTabIds[1]) paneTabIds[1] = id;
+      else                     paneTabIds[0] = id;
     }
 
     function addTab(name, xmlText, parsedData) {
       const id = Date.now().toString();
       tabs.push({ id, name, type: 'xml', xmlText, parsedData });
-      activeTabId = id;
+      assignTabToPane(id);
       saveTabs();
       renderTabs();
-      renderActiveData();
+      renderPanes();
     }
 
     function removeTab(id) {
       const name = tabs.find(t => t.id === id)?.name || '';
       if (!confirm(`「${name}」を削除しますか？`)) return;
       tabs = tabs.filter(t => t.id !== id);
-      if (activeTabId === id) {
-        activeTabId = tabs[tabs.length - 1]?.id || null;
-      }
+      paneTabIds = paneTabIds.map(pid => (pid === id ? null : pid));
+      fillEmptyPanes();
       saveTabs();
       renderTabs();
-      renderActiveData();
+      renderPanes();
     }
 
     function switchTab(id) {
-      activeTabId = id;
+      if (paneTabIds.includes(id)) return; // すでにどちらかのペインに表示中
+      paneTabIds[0] = id;
       saveTabs();
       renderTabs();
-      renderActiveData();
+      renderPanes();
     }
 
     function renderTabs() {
@@ -820,7 +823,7 @@
       }
       tabs.forEach(({ id, name, type }) => {
         const tab = document.createElement('div');
-        tab.className = 'tab' + (id === activeTabId ? ' active' : '');
+        tab.className = 'tab' + (paneTabIds.includes(id) ? ' active' : '');
         const editBtn = type === 'manual'
           ? `<button class="tab-edit" title="編集">✏️</button>`
           : '';
@@ -844,50 +847,59 @@
       });
     }
 
-    function renderActiveData() {
-      const activeTab = tabs.find(t => t.id === activeTabId);
-      if (activeTab) {
-        currentParsedData = activeTab.parsedData;
-        renderCategoryFilter();
-        renderDataList();
-      } else {
-        currentParsedData = [];
-        renderCategoryFilter();
-        renderEmpty();
-      }
+    function renderPanes() {
+      renderPane(0);
+      renderPane(1);
     }
 
-    function renderCategoryFilter() {
-      const prevValue = categorySelect.value;
-      categorySelect.innerHTML = '<option value="">すべてのカテゴリ</option>';
+    function renderPane(idx) {
+      const select = paneSelects[idx];
+      const list   = dataLists[idx];
 
-      const hasTabs = tabs.some(t => t.parsedData.length > 0);
-      if (!hasTabs) {
-        categorySelect.disabled = true;
+      // ペインのデータ選択プルダウンを更新
+      select.innerHTML = '<option value="">— データを選択 —</option>';
+      tabs.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = t.name;
+        select.appendChild(opt);
+      });
+      select.value    = paneTabIds[idx] || '';
+      select.disabled = !tabs.length;
+
+      const tab = tabs.find(t => t.id === paneTabIds[idx]);
+      if (!tab || !tab.parsedData.length) {
+        list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>データ未選択</p></div>';
         return;
       }
 
-      // タブごとに optgroup を作成
-      tabs.forEach(tab => {
-        if (!tab.parsedData.length) return;
-        const grp = document.createElement('optgroup');
-        grp.label = tab.name;
-        tab.parsedData.forEach(({ group }) => {
-          const opt = document.createElement('option');
-          opt.value = `${tab.id}::${group}`;
-          const suffix = group.startsWith(tab.name)
-            ? group.slice(tab.name.length).trim()
-            : group;
-          opt.textContent = suffix || tab.name;
-          grp.appendChild(opt);
-        });
-        categorySelect.appendChild(grp);
-      });
+      list.innerHTML = '';
+      tab.parsedData.forEach(({ group, icon, items }) => {
+        if (!items.length) return;
 
-      // 前の選択を維持できるか確認
-      const stillExists = [...categorySelect.options].some(o => o.value === prevValue);
-      categorySelect.value = stillExists ? prevValue : '';
-      categorySelect.disabled = false;
+        const groupEl = document.createElement('div');
+        groupEl.className = 'data-group';
+
+        const labelEl = document.createElement('div');
+        labelEl.className = 'group-label';
+        labelEl.innerHTML = `<span>${icon}</span>${escapeHtml(group)}`;
+        groupEl.appendChild(labelEl);
+
+        items.forEach(({ value }) => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'data-item';
+          itemEl.title = value;
+          itemEl.innerHTML = `<div class="item-value">${escapeHtml(value).replace(/\n/g, ' ')}</div>`;
+          itemEl.addEventListener('click', () => {
+            appendToEditor(value);
+            itemEl.classList.add('flash');
+            setTimeout(() => itemEl.classList.remove('flash'), 900);
+          });
+          groupEl.appendChild(itemEl);
+        });
+
+        list.appendChild(groupEl);
+      });
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -908,33 +920,24 @@
     const btnModalExport  = document.getElementById('btn-modal-export');
     const btnModalCancel  = document.getElementById('btn-modal-cancel');
     const modalClose      = document.getElementById('modal-close');
-    const categorySelect  = document.getElementById('category-select');
-    const dataList        = document.getElementById('data-list');
+    const paneSelects     = [document.getElementById('pane-select-0'), document.getElementById('pane-select-1')];
+    const dataLists       = [document.getElementById('data-list-0'),  document.getElementById('data-list-1')];
     const errorBox        = document.getElementById('error-box');
     const errorText       = document.getElementById('error-text');
     const editor          = document.getElementById('editor');
-    const charCount       = document.getElementById('char-count');
     const btnTemplate     = document.getElementById('btn-template');
     const btnClear        = document.getElementById('btn-clear');
     const btnCopy         = document.getElementById('btn-copy');
     const toast           = document.getElementById('toast');
 
-    let currentParsedData = [];
-
-    categorySelect.addEventListener('change', () => {
-      const val = categorySelect.value;
-      if (val) {
-        const [tabId] = val.split('::');
-        if (tabId !== activeTabId) {
-          // 別タブのカテゴリが選ばれたらタブを切り替える
-          activeTabId = tabId;
-          saveTabs();
-          renderTabs();
-          const activeTab = tabs.find(t => t.id === activeTabId);
-          currentParsedData = activeTab ? activeTab.parsedData : [];
-        }
-      }
-      renderDataList();
+    // ペインのプルダウンで表示データを切り替え
+    paneSelects.forEach((sel, idx) => {
+      sel.addEventListener('change', () => {
+        paneTabIds[idx] = sel.value || null;
+        saveTabs();
+        renderTabs();
+        renderPanes();
+      });
     });
 
     // ─────────────────────────────────────────────────────────────
@@ -1041,12 +1044,11 @@
       } else {
         const id = Date.now().toString();
         tabs.push({ id, name, type: 'manual', xmlText: null, items: [...modalItems], parsedData });
-        activeTabId = id;
+        assignTabToPane(id);
       }
       saveTabs();
       renderTabs();
-      renderCategoryFilter();
-      renderActiveData();
+      renderPanes();
       closeManualModal();
       showToast(`✅ 「${name}」を保存しました`);
     });
@@ -1086,63 +1088,6 @@
       }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    //  データ一覧レンダリング
-    // ─────────────────────────────────────────────────────────────
-    function renderDataList() {
-      dataList.innerHTML = '';
-      const filterValue = categorySelect.value;
-      let dataToShow;
-      if (!filterValue) {
-        dataToShow = currentParsedData;
-      } else {
-        const [, groupName] = filterValue.split('::');
-        dataToShow = currentParsedData.filter(g => g.group === groupName);
-      }
-
-      dataToShow.forEach(({ group, icon, items }) => {
-        if (!items.length) return;
-
-        const groupEl = document.createElement('div');
-        groupEl.className = 'data-group';
-
-        const labelEl = document.createElement('div');
-        labelEl.className = 'group-label';
-        labelEl.innerHTML = `<span>${icon}</span>${group}`;
-        groupEl.appendChild(labelEl);
-
-        items.forEach(({ label, value }) => {
-          const itemEl = document.createElement('div');
-          itemEl.className = 'data-item';
-          itemEl.innerHTML = `
-            <div class="item-label">${label}</div>
-            <div class="item-value">${escapeHtml(value).replace(/\n/g, '<br>')}</div>
-            <div class="item-arrow">→</div>
-          `;
-          itemEl.addEventListener('click', () => {
-            appendToEditor(value);
-            itemEl.classList.add('flash');
-            setTimeout(() => itemEl.classList.remove('flash'), 900);
-          });
-          groupEl.appendChild(itemEl);
-        });
-
-        dataList.appendChild(groupEl);
-      });
-
-      if (!dataToShow.length) {
-        dataList.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>該当する項目がありません</p></div>';
-      }
-    }
-
-    function renderEmpty() {
-      dataList.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">📋</div>
-          <p>XMLファイルを読み込むと<br>指導文書が表示されます</p>
-        </div>`;
-    }
-
     function escapeHtml(str) {
       return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
@@ -1151,11 +1096,19 @@
     //  転記機能
     // ─────────────────────────────────────────────────────────────
     function appendToEditor(value) {
-      const line = `${value}\n`;
-      if (editor.value && !editor.value.endsWith('\n')) editor.value += '\n';
-      editor.value += line;
-      updateCharCount();
-      editor.scrollTop = editor.scrollHeight;
+      const start = editor.selectionStart;
+      const end   = editor.selectionEnd;
+      const before = editor.value.slice(0, start);
+      const after  = editor.value.slice(end);
+
+      // 挿入位置の前が行の途中なら改行を入れてから挿入する
+      const prefix = before && !before.endsWith('\n') ? '\n' : '';
+      const suffix = after.startsWith('\n') ? '' : '\n';
+      const inserted = `${prefix}${value}${suffix}`;
+
+      editor.value = before + inserted + after;
+      const cursor = start + inserted.length;
+      editor.setSelectionRange(cursor, cursor);
       editor.focus();
     }
 
@@ -1163,23 +1116,15 @@
     // ─────────────────────────────────────────────────────────────
     //  エディタ操作
     // ─────────────────────────────────────────────────────────────
-    editor.addEventListener('input', updateCharCount);
-
-    function updateCharCount() {
-      charCount.textContent = editor.value.length + ' 文字';
-    }
-
     btnTemplate.addEventListener('click', () => {
       if (editor.value.trim() && !confirm('現在の内容にテンプレートを上書きしますか？')) return;
       editor.value = TEMPLATE;
-      updateCharCount();
       editor.focus();
     });
 
     btnClear.addEventListener('click', () => {
       if (!editor.value || confirm('入力内容をクリアしますか？')) {
         editor.value = '';
-        updateCharCount();
       }
     });
 
