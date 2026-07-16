@@ -1160,18 +1160,14 @@
     //  転記機能
     // ─────────────────────────────────────────────────────────────
     function appendToEditor(value) {
-      const start = editor.selectionStart;
-      const end   = editor.selectionEnd;
+      const start  = editor.selectionStart;
+      const end    = editor.selectionEnd;
       const before = editor.value.slice(0, start);
       const after  = editor.value.slice(end);
 
-      // 挿入位置の前が行の途中なら改行を入れてから挿入する
-      const prefix = before && !before.endsWith('\n') ? '\n' : '';
-      const suffix = after.startsWith('\n') ? '' : '\n';
-      const inserted = `${prefix}${value}${suffix}`;
-
-      editor.value = before + inserted + after;
-      const cursor = start + inserted.length;
+      // カーソル位置にそのまま挿入（改行は追加しない）
+      editor.value = before + value + after;
+      const cursor = start + value.length;
       editor.setSelectionRange(cursor, cursor);
       editor.focus();
     }
@@ -1186,15 +1182,19 @@
 
     function updateTargetLine() {
       const checked = targetCheckboxes.filter(cb => cb.checked).map(cb => cb.value);
-      const lines = editor.value.split('\n');
 
-      // 既存の「指導相手：」行を先頭から探して除去
-      if (lines[0]?.startsWith(TARGET_PREFIX)) lines.shift();
+      // 既存の「指導相手：」行を位置にかかわらず除去し、先頭の空行も取り除く
+      const lines = editor.value.split('\n').filter(line => !line.startsWith(TARGET_PREFIX));
+      while (lines.length && !lines[0].trim()) lines.shift();
+      const body = lines.join('\n');
 
       if (checked.length) {
-        lines.unshift(TARGET_PREFIX + checked.join('、'));
+        const targetLine = TARGET_PREFIX + checked.join('、');
+        // 指導相手と本文の間は必ず1行あける
+        editor.value = body ? `${targetLine}\n\n${body}` : targetLine;
+      } else {
+        editor.value = body;
       }
-      editor.value = lines.join('\n');
     }
 
     targetCheckboxes.forEach(cb => cb.addEventListener('change', updateTargetLine));
@@ -1203,7 +1203,12 @@
     //  エディタ操作
     // ─────────────────────────────────────────────────────────────
     function insertTemplate(template) {
-      if (editor.value.trim() && !confirm('現在の内容にテンプレートを上書きしますか？')) return;
+      // 指導相手行を除いた本文があるときだけ上書き確認する
+      const body = editor.value
+        .split('\n')
+        .filter(line => !line.startsWith(TARGET_PREFIX))
+        .join('\n');
+      if (body.trim() && !confirm('現在の内容にテンプレートを上書きしますか？')) return;
       editor.value = template;
       updateTargetLine(); // チェック済みの指導相手行を先頭に復元
       editor.focus();
